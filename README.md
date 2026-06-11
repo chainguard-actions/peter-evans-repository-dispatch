@@ -1,6 +1,6 @@
 # peter-evans/repository-dispatch
 
-A GitHub action to create a repository dispatch event
+Create a repository dispatch event
 
 Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at [https://github.com/peter-evans/repository-dispatch](https://github.com/peter-evans/repository-dispatch).
 
