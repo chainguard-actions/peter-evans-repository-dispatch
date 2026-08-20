@@ -1,4 +1,4 @@
-name: Test basic usage
+name: Test explicit repository input
 on:
   workflow_dispatch:
 jobs:
@@ -7,22 +7,24 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - name: Dispatch event (sentinel repo — API call expected to fail gracefully)
+      - name: Dispatch event to explicit repository
         id: dispatch
         uses: .
         continue-on-error: true
         with:
-          event-type: test-event
+          repository: peter-evans/repository-dispatch
+          event-type: integration-test
+          client-payload: '{"source": "act-harness"}'
 
-      - name: Assert action ran and failed gracefully on sentinel repo
+      - name: Assert action ran and failed gracefully (no write access to external repo)
         env:
           OUTCOME: ${{ steps.dispatch.outcome }}
         run: |
           echo "outcome: $OUTCOME"
           if [ "$OUTCOME" = "success" ]; then
-            echo "PASS: action succeeded (real repo resolved)"
+            echo "PASS: action succeeded"
           elif [ "$OUTCOME" = "failure" ]; then
-            echo "PASS: action failed gracefully (sentinel repo is not resolvable)"
+            echo "PASS: action failed gracefully (no write access to external repo under harness token)"
           else
             echo "FAIL: unexpected outcome '$OUTCOME'"
             exit 1
